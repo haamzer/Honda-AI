@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honda Sales AI — Plateforme Complète</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%;overflow:hidden}
+body{background:#f5f5f5;font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.fade-in{animation:fadeUp .3s ease}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useRef,useEffect}=React;
+const LOGO="data:image/jpeg;base64,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";
+
+const CLIENTS=[
+  {id:1,name:"Martin Dupont",phone:"06 12 34 56 78",email:"m.dupont@mail.fr",vehicule:"Honda Civic 2019",km:78400,finLeasing:"2025-09-15",dernierEntretien:"2024-11-20",budget:"25 000 - 35 000 EUR",score:92,status:"hot",historique:["Essai HR-V 2024","Devis Civic e:HEV","Entretien 60 000 km"],ia:"Fin de leasing dans 6 mois. Migration Civic e:HEV ideale. Taux conversion : 78%.",reprise:"14 200 EUR",modeles:["Civic e:HEV Advance","HR-V e:HEV Elegance"],access:["Pack Hiver","Dashcam","Extension garantie 5 ans"]},
+  {id:2,name:"Sophie Laurent",phone:"06 98 76 54 32",email:"s.laurent@mail.fr",vehicule:"Honda Jazz 2021",km:32100,finLeasing:"2027-03-01",dernierEntretien:"2025-01-10",budget:"20 000 - 28 000 EUR",score:45,status:"warm",historique:["Achat Jazz 2021","Entretien 30k km","MAJ GPS"],ia:"Leasing actif 2027. Opportunite accessoires et garantie.",reprise:"12 800 EUR",modeles:["Jazz Crosstar e:HEV 2025"],access:["Attelage","Sieges chauffants","Garantie+ 7 ans"]},
+  {id:3,name:"Karim Benzarti",phone:"07 45 23 89 01",email:"k.benzarti@mail.fr",vehicule:"Honda CR-V 2018",km:112000,finLeasing:null,dernierEntretien:"2024-08-05",budget:"35 000 - 50 000 EUR",score:87,status:"hot",historique:["Proprietaire depuis 2018","4 entretiens Honda","3 visites ZR-V online"],ia:"Hors garantie, km eleve. Fort interet ZR-V. Conversion : 71%.",reprise:"11 500 EUR",modeles:["ZR-V e:HEV Sport","CR-V e:PHEV Advance"],access:["Jantes 19\"","Ceramique","Pack techno"]},
+  {id:4,name:"Claire Moreau",phone:"06 55 44 33 22",email:"c.moreau@mail.fr",vehicule:null,km:null,finLeasing:null,dernierEntretien:null,budget:"18 000 - 24 000 EUR",score:63,status:"new",historique:["Contact Salon Lyon","Brochure Jazz + Honda e"],ia:"Prospect urbain, sensible electrique. Essai Honda e prioritaire.",reprise:null,modeles:["Honda e Advance","Jazz e:HEV Elegance"],access:["Cable recharge","Tapis premium","Pare-soleil"]}
+];
+
+const ETAPES=[
+  {n:1,l:"Gestion previsionnelle",d:"Plans commerciaux, priorites",ia:"L'IA analyse ventes N-1 et tendances marche pour generer des previsions et priorites d'action."},
+  {n:2,l:"Marketing & Conquete",d:"Fidelisation, conquete prospects",ia:"Segmentation CRM, identification clients a relancer (fin leasing, vehicule vieillissant), messages personnalises automatiques."},
+  {n:3,l:"Contact",d:"Mails, courriers, appels",ia:"Redaction auto d'emails/SMS personnalises. Scoring de priorite pour appels sortants."},
+  {n:4,l:"Reception",d:"Accueil rapide et qualitatif",ia:"Fiche d'accueil synthetique avant arrivee du client avec historique et preferences."},
+  {n:5,l:"Qualification client",d:"Questions ciblees, objections",ia:"Synthese profil client et suggestion modeles/arguments les plus pertinents."},
+  {n:6,l:"Presentation statique",d:"Selection vehicule personnalisee",ia:"Recommandation vehicule ideal et parcours de presentation adapte."},
+  {n:7,l:"Essai sur route",d:"Itineraires adaptes, feedback",ia:"Itineraires optimises selon profil et grille de feedback automatisee post-essai."},
+  {n:8,l:"Estimation reprise",d:"Estimation rapide et juste",ia:"Estimation instantanee via Argus + historique reseau Honda + marche occasion."},
+  {n:9,l:"Devis",d:"Configuration, financement",ia:"Devis personnalise avec financement optimise selon profil financier client."},
+  {n:10,l:"Vente additionnelle",d:"Accessoires pertinents",ia:"Recommandation accessoires basee sur profil et ventes similaires du reseau."},
+  {n:11,l:"Commande",d:"Verification, accords financiers",ia:"Verification auto de coherence du devis et detection d'anomalies."},
+  {n:12,l:"Mise en main",d:"Fonctionnalites, moment memorable",ia:"Guide personnalise des fonctionnalites a presenter en priorite."},
+  {n:13,l:"Suivi chronologique",d:"Fidelisation, contact regulier",ia:"Planning de relance intelligent : entretien, garantie, renouvellement, fidelite."}
+];
+
+const STATS_VENTE=[
+  {label:"Temps de reponse lead",avant:"6 heures",apres:"< 60 sec",delta:"-99%",color:"#16a34a",source:"AutoRaptor 2025"},
+  {label:"Taux conversion lead-to-RDV",avant:"18%",apres:"28%",delta:"+56%",color:"#16a34a",source:"AutoRaptor Case Study 2025"},
+  {label:"Ventes mensuelles",avant:"Base",apres:"+15 a 25%",delta:"+25%",color:"#16a34a",source:"AutoRaptor / Covideo 2025"},
+  {label:"Taux de show RDV",avant:"55%",apres:"72%",delta:"+30%",color:"#16a34a",source:"Benchmark dealerships AI 2025"},
+  {label:"Travail admin manuel",avant:"100%",apres:"50%",delta:"-50%",color:"#2563eb",source:"Top 30 AI CRMs Report 2025"},
+  {label:"Chiffre d'affaires",avant:"Base",apres:"+20 a 30%",delta:"+30%",color:"#16a34a",source:"Covideo Automotive AI 2025"},
+  {label:"Conversion lead-to-sale",avant:"4.2%",apres:"5.5%",delta:"+32%",color:"#16a34a",source:"Covideo / Dialora Study"},
+  {label:"Temps d'attente client",avant:"Base",apres:"-60%",delta:"-60%",color:"#2563eb",source:"Dialora Customer Study 2024"}
+];
+const STATS_AV=[
+  {label:"Retention client apres-vente",avant:"35%",apres:"52%",delta:"+49%",color:"#16a34a",source:"Cox Automotive Service Study 2023"},
+  {label:"Taux de rachat meme marque",avant:"25%",apres:"41%",delta:"+64%",color:"#16a34a",source:"Service customers 4x more likely"},
+  {label:"Remplissage atelier",avant:"68%",apres:"85%",delta:"+25%",color:"#16a34a",source:"Benchmark reseau AI 2025"},
+  {label:"Vente additionnelle post-achat",avant:"12%",apres:"23%",delta:"+92%",color:"#16a34a",source:"CRM AI upsell automation"},
+  {label:"Satisfaction client (NPS)",avant:"+32",apres:"+58",delta:"+81%",color:"#16a34a",source:"AI personalization impact study"},
+  {label:"ROI par euro investi CRM IA",avant:"-",apres:"8-12x",delta:"x10",color:"#cc0000",source:"Top 30 AI CRMs Report 2025"}
+];
+
+const SL={hot:{l:"Chaud",bg:"#fef2f2",c:"#dc2626"},warm:{l:"Tiede",bg:"#fffbeb",c:"#d97706"},new:{l:"Nouveau",bg:"#eff6ff",c:"#2563eb"}};
+const sc=s=>s>=75?"#16a34a":s>=50?"#d97706":"#9ca3af";
+
+function companionAI(q){
+  const ql=q.toLowerCase();
+  if(ql.includes("entretien")||ql.includes("revision")||ql.includes("vidange"))
+    return "Votre prochaine revision est programmee le 15/06/2026 ou a 40 000 km (vous etes a 34 521 km). Je vous recommande de prendre rendez-vous chez votre concessionnaire Honda des maintenant pour garantir un creneau.\n\nVoulez-vous que je vous propose les creneaux disponibles ?";
+  if(ql.includes("pneu")||ql.includes("pression"))
+    return "Vos pressions actuelles :\n\nAV-G : 2.3 bar - OK\nAV-D : 2.3 bar - OK\nAR-G : 2.2 bar - OK\nAR-D : 2.2 bar - OK\n\nToutes les pressions sont dans la plage recommandee (2.1-2.5 bar). Prochaine verification recommandee dans 3 000 km.";
+  if(ql.includes("garantie"))
+    return "Votre garantie constructeur Honda expire dans 4 mois. Je vous recommande l'Extension de Garantie e:HEV qui couvre votre groupe motopropulseur hybride pendant 3 ans supplementaires.\n\nOffre speciale en cours : -15% sur l'extension garantie si souscription avant expiration. Contactez votre concessionnaire pour en beneficier.";
+  if(ql.includes("offre")||ql.includes("promo")||ql.includes("reduction"))
+    return "Offres en cours pour votre Honda Civic e:HEV :\n\n1. Pack Hiver a -20% (tapis + coffre + raclette) - Valable jusqu'au 31/12\n2. Extension garantie e:HEV -15% avant expiration\n3. Abonnement entretien Premium : 29 EUR/mois (economies de 18% vs tarif standard)\n4. Dashcam Honda integree : pose offerte ce mois-ci\n\nSouhaitez-vous reserver l'une de ces offres ?";
+  if(ql.includes("consommation")||ql.includes("conso")||ql.includes("carburant")||ql.includes("essence"))
+    return "Analyse de votre consommation (30 derniers jours) :\n\nMoyenne : 4.8 L/100km\nMeilleur trajet : 3.9 L/100km (mode EV dominant)\nTrajet le plus consommateur : 6.2 L/100km (autoroute)\n\nConseils IA : Votre conduite est efficace. En mode urbain, privilegiez le mode EV pour reduire encore votre consommation de 12%.";
+  if(ql.includes("rappel")||ql.includes("alerte")||ql.includes("probleme"))
+    return "Aucun rappel constructeur actif pour votre Honda Civic e:HEV 2024.\n\nAlertes actuelles :\n- Huile moteur : 68% de vie restante (OK)\n- Batterie 12V : 12.6V (OK)\n- Prochaine revision dans 5 479 km\n\nTout est en ordre. Je vous notifierai des qu'une action est necessaire.";
+  if(ql.includes("concessionnaire")||ql.includes("garage")||ql.includes("rendez"))
+    return "Concessionnaires Honda les plus proches :\n\n1. Honda Bussy-Saint-Georges - 3.2 km\n   Prochains creneaux : Lundi 14h, Mercredi 9h\n\n2. Honda Marne-la-Vallee - 5.8 km\n   Prochains creneaux : Mardi 10h, Jeudi 14h\n\nSouhaitez-vous que je reserve un creneau pour vous ?";
+  if(ql.includes("bonjour")||ql.includes("salut")||ql.includes("hello"))
+    return "Bonjour ! Je suis votre assistant Honda Smart Companion. Je peux vous aider avec :\n\n- Etat de votre vehicule et alertes\n- Prochaine revision et prise de RDV\n- Offres et promotions personnalisees\n- Consommation et conseils de conduite\n- Localisation concessionnaires\n\nQue puis-je faire pour vous ?";
+  return "D'apres les donnees de votre Honda Civic e:HEV 2024 :\n\nVotre vehicule est en bon etat general. La prochaine revision est prevue le 15/06/2026. Votre consommation moyenne est de 4.8L/100km, ce qui est excellent pour ce modele.\n\nJe detecte une opportunite : votre garantie expire dans 4 mois. L'extension de garantie e:HEV est actuellement en promotion (-15%).\n\nPosez-moi une question sur votre vehicule, l'entretien, les offres en cours, ou la consommation !";
+}
+
+function App(){
+  const[page,setPage]=useState("journey");
+  const[selClient,setSelClient]=useState(null);
+  const[crmTab,setCrmTab]=useState("profil");
+  const[filter,setFilter]=useState("all");
+  const[search,setSearch]=useState("");
+  const[messages,setMessages]=useState([{role:"assistant",content:"Bonjour ! Je suis votre assistant Honda Smart Companion.\n\nJe suis connecte a votre Honda Civic e:HEV 2024 et je peux vous aider avec :\n\n- Etat du vehicule et alertes\n- Revision et prise de RDV\n- Offres personnalisees\n- Consommation et conseils\n\nEssayez : \"Quand est ma prochaine revision ?\" ou \"Quelles offres pour moi ?\""}]);
+  const[input,setInput]=useState("");
+  const[loading,setLoading]=useState(false);
+  const[apiKey,setApiKey]=useState("");
+  const[showApi,setShowApi]=useState(false);
+  const chatEnd=useRef(null);
+  const[selEtape,setSelEtape]=useState(null);
+  const[btConnected,setBtConnected]=useState(false);
+  const[btSearching,setBtSearching]=useState(false);
+  const[btStep,setBtStep]=useState("");
+  const[speed,setSpeed]=useState(0);
+  const[statsTab,setStatsTab]=useState("vente");
+
+  useEffect(()=>{chatEnd.current?.scrollIntoView({behavior:"smooth"});},[messages]);
+  useEffect(()=>{if(!btConnected)return;const iv=setInterval(()=>{setSpeed(s=>{const t=[0,30,50,70,90,110,60][Math.floor(Math.random()*7)];return Math.max(0,Math.min(180,s+(t-s)*.12+(Math.random()-.5)*4));});},700);return()=>clearInterval(iv);},[btConnected]);
+
+  const sendMessage=async()=>{
+    if(!input.trim()||loading)return;
+    const userMsg=input.trim();setInput("");
+    const newMsgs=[...messages,{role:"user",content:userMsg}];setMessages(newMsgs);setLoading(true);
+    if(apiKey.trim()){
+      try{
+        const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+          headers:{"Content-Type":"application/json","x-api-key":apiKey.trim(),"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+          body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+            system:"Tu es l'assistant vocal Honda Smart Companion, integre dans l'application mobile du proprietaire d'une Honda Civic e:HEV 2024. VIN: SHHFK8G70PU. KM: 34521. Carburant: 72%. Temp moteur: 88C. Pneus OK (2.2-2.3 bar). Huile: 68% vie. Batterie 12V: 12.6V. Prochaine revision: 15/06/2026 a 40000km. Garantie expire dans 4 mois. Conso moyenne: 4.8L/100km. Tu proposes des offres personnalisees (pack hiver -20%, extension garantie -15%, abonnement entretien 29EUR/mois, dashcam pose offerte). Tu donnes des conseils de conduite. Tu peux aider a prendre RDV chez le concessionnaire. Reponds en francais, de maniere chaleureuse et utile. Utilise des donnees concretes du vehicule.",
+            messages:newMsgs.slice(-10).map(m=>({role:m.role,content:m.content}))})
+        });
+        const data=await res.json();
+        setMessages(prev=>[...prev,{role:"assistant",content:data.content?.map(b=>b.text||"").join("")||"Erreur."}]);
+      }catch(e){setMessages(prev=>[...prev,{role:"assistant",content:companionAI(userMsg)}]);}
+    }else{
+      await new Promise(r=>setTimeout(r,600+Math.random()*800));
+      setMessages(prev=>[...prev,{role:"assistant",content:companionAI(userMsg)}]);
+    }
+    setLoading(false);
+  };
+
+  const startBt=()=>{setBtSearching(true);setBtStep("Recherche...");setTimeout(()=>setBtStep("Honda Civic e:HEV detecte"),1500);setTimeout(()=>setBtStep("Appairage Bluetooth..."),3000);setTimeout(()=>setBtStep("Synchronisation OBD-II..."),4500);setTimeout(()=>{setBtStep("Connecte !");setBtSearching(false);setBtConnected(true);},6000);};
+
+  const navItems=[
+    {id:"journey",label:"Parcours",svg:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
+    {id:"stats",label:"Impact IA",svg:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'},
+    {id:"crm",label:"CRM",svg:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+    {id:"companion",label:"Companion",svg:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>'},
+    {id:"ai",label:"Mon Honda",svg:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'}
+  ];
+  const NI=({svg})=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" dangerouslySetInnerHTML={{__html:svg}}/>;
+
+  const StatCard=({s})=>(
+    <div style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:14,padding:"18px 20px",position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",top:0,left:0,width:3,height:"100%",background:s.color}}/>
+      <div style={{font:"600 13px 'Inter'",color:"#1a1a1a",marginBottom:12}}>{s.label}</div>
+      <div style={{display:"flex",gap:12,marginBottom:10}}>
+        <div style={{flex:1,background:"#f9fafb",borderRadius:8,padding:"10px 12px",textAlign:"center"}}>
+          <div style={{font:"700 9px 'DM Mono'",color:"#bbb",textTransform:"uppercase",marginBottom:4}}>Avant IA</div>
+          <div style={{font:"700 16px 'Inter'",color:"#888"}}>{s.avant}</div>
+        </div>
+        <div style={{flex:1,background:s.color+"11",borderRadius:8,padding:"10px 12px",textAlign:"center"}}>
+          <div style={{font:"700 9px 'DM Mono'",color:"#bbb",textTransform:"uppercase",marginBottom:4}}>Avec IA</div>
+          <div style={{font:"700 16px 'Inter'",color:s.color}}>{s.apres}</div>
+        </div>
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{font:"800 18px 'Inter'",color:s.color}}>{s.delta}</span>
+        <span style={{font:"400 10px 'Inter'",color:"#bbb",fontStyle:"italic"}}>{s.source}</span>
+      </div>
+    </div>
+  );
+
+  return(
+    <div style={{display:"flex",height:"100vh",overflow:"hidden"}}>
+      {/* SIDEBAR */}
+      <div style={{width:220,background:"#000",display:"flex",flexDirection:"column",flexShrink:0}}>
+        <div style={{padding:"18px 20px",borderBottom:"1px solid #1a1a1a"}}><img src={LOGO} alt="Honda" style={{height:28}}/><div style={{font:"600 11px 'Inter'",color:"#666",marginTop:6,letterSpacing:".04em"}}>Sales AI - CRM Intelligent</div></div>
+        <div style={{height:3,background:"#cc0000"}}/>
+        <div style={{flex:1,padding:"16px 10px",display:"flex",flexDirection:"column",gap:4}}>
+          {navItems.map(n=>(<button key={n.id} onClick={()=>{setPage(n.id);setSelClient(null);setSelEtape(null);}} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",border:"none",borderRadius:10,cursor:"pointer",background:page===n.id?"#1a1a1a":"transparent",color:page===n.id?"#fff":"#666",font:"500 13px 'Inter'",width:"100%",textAlign:"left"}}><span style={{opacity:page===n.id?1:.5}}><NI svg={n.svg}/></span>{n.label}</button>))}
+        </div>
+        <div style={{padding:"14px",borderTop:"1px solid #1a1a1a",display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:34,height:34,borderRadius:"50%",background:"#cc0000",display:"flex",alignItems:"center",justifyContent:"center",font:"700 12px 'Inter'",color:"#fff"}}>V</div>
+          <div><div style={{font:"600 12px 'Inter'",color:"#ccc"}}>Vendeur</div><div style={{font:"400 10px 'Inter'",color:"#555"}}>Concessionnaire Honda</div></div>
+        </div>
+      </div>
+
+      {/* MAIN */}
+      <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",background:"#f5f5f5"}}>
+        <div style={{height:56,background:"#fff",borderBottom:"1px solid #e8e8e8",display:"flex",alignItems:"center",padding:"0 28px",flexShrink:0}}>
+          <div style={{font:"700 16px 'Inter'",color:"#1a1a1a"}}>{
+            page==="journey"?"Parcours Client - 13 Etapes":page==="stats"?"Impact IA - Statistiques":
+            page==="crm"?(selClient?selClient.name:"Gestion Clients"):
+            page==="companion"?"Honda Smart Companion":"Mon Honda - Assistant IA"
+          }</div>
+        </div>
+        <div style={{flex:1,overflow:"auto",padding:page==="companion"?"24px":"28px"}}>
+
+          {/* JOURNEY */}
+          {page==="journey"&&!selEtape&&(
+            <div className="fade-in">
+              <p style={{font:"400 14px 'Inter'",color:"#888",marginBottom:24,maxWidth:700}}>L'IA s'integre dans le processus de vente Honda sans le denaturer. Cliquez sur une etape.</p>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:14}}>
+                {ETAPES.map(e=>(<div key={e.n} onClick={()=>setSelEtape(e)} style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:14,padding:"20px 22px",cursor:"pointer",transition:"all .2s",position:"relative",overflow:"hidden"}} onMouseEnter={ev=>ev.currentTarget.style.borderColor="#cc0000"} onMouseLeave={ev=>ev.currentTarget.style.borderColor="#e8e8e8"}>
+                  <div style={{position:"absolute",top:0,left:0,width:3,height:"100%",background:"#cc0000"}}/>
+                  <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}><span style={{font:"700 11px 'DM Mono'",color:"#cc0000",background:"#fef2f2",padding:"4px 10px",borderRadius:6}}>E{String(e.n).padStart(2,"0")}</span><span style={{font:"600 14px 'Inter'",color:"#1a1a1a"}}>{e.l}</span></div>
+                  <p style={{font:"400 12px 'Inter'",color:"#888",lineHeight:1.5}}>{e.d}</p>
+                </div>))}
+              </div>
+            </div>
+          )}
+          {page==="journey"&&selEtape&&(
+            <div className="fade-in">
+              <button onClick={()=>setSelEtape(null)} style={{background:"none",border:"none",color:"#cc0000",cursor:"pointer",font:"600 14px 'Inter'",marginBottom:20}}>&#8592; Retour</button>
+              <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:24}}><span style={{font:"800 28px 'Inter'",color:"#cc0000"}}>E{String(selEtape.n).padStart(2,"0")}</span><div><div style={{font:"800 22px 'Inter'",color:"#1a1a1a"}}>{selEtape.l}</div><div style={{font:"400 14px 'Inter'",color:"#888"}}>{selEtape.d}</div></div></div>
+              <div style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:14,padding:24,position:"relative",overflow:"hidden"}}><div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#cc0000,#ff4444,#cc0000)",backgroundSize:"200% 100%",animation:"shimmer 3s linear infinite"}}/><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}><span style={{font:"800 12px 'Inter'",color:"#cc0000",textTransform:"uppercase"}}>Honda Sales AI</span><span style={{font:"700 9px 'DM Mono'",background:"#cc0000",color:"#fff",padding:"3px 10px",borderRadius:4}}>IA</span></div><p style={{font:"400 15px/1.8 'Inter'",color:"#444"}}>{selEtape.ia}</p></div>
+            </div>
+          )}
+
+          {/* STATS */}
+          {page==="stats"&&(
+            <div className="fade-in">
+              <p style={{font:"400 14px 'Inter'",color:"#888",marginBottom:20,maxWidth:700}}>Donnees issues d'etudes reelles sur l'impact de l'IA dans les concessions automobiles (sources : AutoRaptor, Covideo, Cox Automotive, Dialora, rapports 2024-2025).</p>
+              <div style={{display:"flex",gap:0,borderBottom:"2px solid #e8e8e8",marginBottom:24}}>
+                {[{k:"vente",l:"Phase Vente (E1-E11)"},{k:"av",l:"Apres-Vente (E12-E13)"}].map(t=>(
+                  <button key={t.k} onClick={()=>setStatsTab(t.k)} style={{padding:"12px 24px",border:"none",cursor:"pointer",font:"600 14px 'Inter'",background:"transparent",color:statsTab===t.k?"#cc0000":"#999",borderBottom:statsTab===t.k?"2px solid #cc0000":"2px solid transparent",marginBottom:-2}}>{t.l}</button>
+                ))}
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                {(statsTab==="vente"?STATS_VENTE:STATS_AV).map((s,i)=><StatCard key={i} s={s}/>)}
+              </div>
+              <div style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:14,padding:24,marginTop:20,position:"relative",overflow:"hidden"}}>
+                <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#cc0000,#ff4444,#cc0000)",backgroundSize:"200% 100%",animation:"shimmer 3s linear infinite"}}/>
+                <div style={{font:"800 14px 'Inter'",color:"#cc0000",marginBottom:12}}>SYNTHESE HONDA SALES AI</div>
+                <p style={{font:"400 14px/1.75 'Inter'",color:"#555"}}>En integrant l'IA a chaque etape du parcours client, Honda France peut esperer une augmentation de 20-30% du chiffre d'affaires par concessionnaire, une reduction de 50% du travail administratif, et une amelioration de 49% de la retention client apres-vente. Le ROI moyen observe dans l'industrie est de 8 a 12 EUR pour chaque euro investi dans un CRM IA, avec un retour positif des les 30-90 premiers jours.</p>
+              </div>
+            </div>
+          )}
+
+          {/* CRM */}
+          {page==="crm"&&!selClient&&(
+            <div className="fade-in">
+              <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap"}}>
+                <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher..." style={{flex:1,minWidth:200,padding:"11px 16px",background:"#fff",border:"1px solid #ddd",borderRadius:8,font:"500 14px 'Inter'",outline:"none",color:"#1a1a1a"}}/>
+                {["all","hot","warm","new"].map(s=>(<button key={s} onClick={()=>setFilter(s)} style={{padding:"10px 18px",borderRadius:8,border:"1px solid "+(filter===s?"#cc0000":"#ddd"),cursor:"pointer",font:"600 11px 'DM Mono'",background:filter===s?"#cc0000":"#fff",color:filter===s?"#fff":"#888"}}>{s==="all"?"Tous":SL[s].l}</button>))}
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                {CLIENTS.filter(c=>(filter==="all"||c.status===filter)&&c.name.toLowerCase().includes(search.toLowerCase())).map(c=>(<div key={c.id} onClick={()=>{setSelClient(c);setCrmTab("profil");}} style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:14,padding:"22px 24px",cursor:"pointer",transition:"all .2s"}} onMouseEnter={ev=>{ev.currentTarget.style.borderColor="#cc0000";}} onMouseLeave={ev=>{ev.currentTarget.style.borderColor="#e8e8e8";}}>
+                  <div style={{display:"flex",justifyContent:"space-between"}}><div><div style={{font:"700 16px 'Inter'",color:"#1a1a1a"}}>{c.name}</div><div style={{font:"400 13px 'Inter'",color:"#999",marginTop:3}}>{c.vehicule||"Prospect"}</div></div><div style={{width:46,height:46,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",font:"700 15px 'DM Mono'",color:sc(c.score),border:"2px solid "+sc(c.score)+"33"}}>{c.score}</div></div>
+                  <div style={{display:"flex",gap:8,marginTop:14}}><span style={{font:"600 10px 'DM Mono'",padding:"5px 13px",borderRadius:6,background:SL[c.status].bg,color:SL[c.status].c}}>{SL[c.status].l}</span><span style={{font:"600 10px 'DM Mono'",padding:"5px 13px",borderRadius:6,background:"#f5f5f5",color:"#888"}}>{c.budget}</span></div>
+                </div>))}
+              </div>
+            </div>
+          )}
+          {page==="crm"&&selClient&&(
+            <div className="fade-in">
+              <button onClick={()=>setSelClient(null)} style={{background:"none",border:"none",color:"#cc0000",cursor:"pointer",font:"600 14px 'Inter'",marginBottom:20}}>&#8592; Retour</button>
+              <div style={{display:"flex",alignItems:"center",gap:20,marginBottom:28}}>
+                <div style={{width:56,height:56,borderRadius:"50%",background:"#cc0000",display:"flex",alignItems:"center",justifyContent:"center",font:"800 20px 'Inter'",color:"#fff"}}>{selClient.name.split(" ").map(w=>w[0]).join("")}</div>
+                <div><div style={{font:"800 22px 'Inter'",color:"#1a1a1a"}}>{selClient.name}</div><div style={{font:"400 13px 'Inter'",color:"#999"}}>{selClient.email}</div></div>
+              </div>
+              <div style={{display:"flex",borderBottom:"2px solid #e8e8e8",marginBottom:24}}>
+                {[{k:"profil",l:"Profil"},{k:"ia",l:"Analyse IA"},{k:"devis",l:"Devis"},{k:"relance",l:"Relances"}].map(t=>(<button key={t.k} onClick={()=>setCrmTab(t.k)} style={{padding:"12px 20px",border:"none",cursor:"pointer",font:"600 13px 'Inter'",background:"transparent",color:crmTab===t.k?"#cc0000":"#999",borderBottom:crmTab===t.k?"2px solid #cc0000":"2px solid transparent",marginBottom:-2}}>{t.l}</button>))}
+              </div>
+              {crmTab==="profil"&&<div><div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>{[{l:"Vehicule",v:selClient.vehicule||"Prospect"},{l:"KM",v:selClient.km?selClient.km.toLocaleString("fr")+" km":"-"},{l:"Budget",v:selClient.budget},{l:"Entretien",v:selClient.dernierEntretien||"-"}].map((x,i)=>(<div key={i} style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:12,padding:"16px 20px"}}><div style={{font:"700 10px 'DM Mono'",color:"#bbb",textTransform:"uppercase",marginBottom:8}}>{x.l}</div><div style={{font:"600 16px 'Inter'",color:"#1a1a1a"}}>{x.v}</div></div>))}</div></div>}
+              {crmTab==="ia"&&<div><div style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:12,padding:"22px 24px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#cc0000,#ff4444,#cc0000)",backgroundSize:"200% 100%",animation:"shimmer 3s linear infinite"}}/><div style={{font:"800 12px 'Inter'",color:"#cc0000",marginBottom:12}}>HONDA SALES AI</div><p style={{font:"400 14px/1.75 'Inter'",color:"#555"}}>{selClient.ia}</p></div>{selClient.reprise&&<div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:12,padding:24,textAlign:"center",marginTop:14}}><div style={{font:"700 10px 'DM Mono'",color:"#22c55e"}}>REPRISE IA</div><div style={{font:"800 32px 'Inter'",color:"#16a34a",marginTop:4}}>{selClient.reprise}</div></div>}</div>}
+              {crmTab==="devis"&&<div style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:14,padding:28}}><div style={{font:"700 20px 'Inter'",color:"#1a1a1a",marginBottom:16}}>{selClient.modeles[0]}</div>{[{l:"Prix catalogue",v:selClient.budget.split("-")[1]?.trim()||"28k"},...(selClient.reprise?[{l:"Reprise",v:"- "+selClient.reprise,c:"#16a34a"}]:[]),{l:"Mise en main",v:"+ 350 EUR"}].map((r,i)=>(<div key={i} style={{display:"flex",justifyContent:"space-between",padding:"13px 0",borderBottom:"1px solid #f5f5f5"}}><span style={{color:"#888"}}>{r.l}</span><span style={{font:"600 14px 'DM Mono'",color:r.c||"#1a1a1a"}}>{r.v}</span></div>))}<div style={{marginTop:20,paddingTop:20,borderTop:"2px solid #eee",display:"flex",justifyContent:"space-between"}}><span style={{color:"#888"}}>LOA 48 mois</span><span style={{font:"800 22px 'Inter'",color:"#cc0000"}}>289 EUR/mois</span></div></div>}
+              {crmTab==="relance"&&<div>{[{d:"Aujourd'hui",t:"Email",o:"Offre "+selClient.modeles[0],c:"#d97706"},{d:"J+7",t:"SMS",o:"Invitation essai",c:"#2563eb"},{d:"J+30",t:"Appel",o:"Suivi projet",c:"#2563eb"}].map((r,i)=>(<div key={i} style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:12,padding:"18px 22px",display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><div><div style={{display:"flex",gap:8,marginBottom:6}}><span style={{font:"700 10px 'DM Mono'",padding:"4px 12px",borderRadius:4,background:"#f5f5f5",color:"#888"}}>{r.d}</span><span style={{font:"700 10px 'DM Mono'",padding:"4px 12px",borderRadius:4,background:"#f5f5f5",color:"#888"}}>{r.t}</span></div><div style={{font:"500 14px 'Inter'",color:"#444"}}>{r.o}</div></div><span style={{font:"700 11px 'DM Mono'",color:r.c}}>&#9679; Planifie</span></div>))}</div>}
+            </div>
+          )}
+
+          {/* COMPANION */}
+          {page==="companion"&&(
+            <div className="fade-in" style={{display:"flex",justifyContent:"center",gap:40,flexWrap:"wrap"}}>
+              <div style={{width:380,background:"#0a0a0f",borderRadius:40,overflow:"hidden",boxShadow:"0 0 0 3px #222,0 30px 80px rgba(0,0,0,.4)",height:720,display:"flex",flexDirection:"column",flexShrink:0}}>
+                <div style={{background:"#000",padding:"14px 20px 12px",display:"flex",alignItems:"center",gap:12,borderBottom:"2px solid #cc0000"}}><img src={LOGO} alt="" style={{height:20}}/><span style={{font:"600 13px 'Inter'",color:"#fff"}}>Smart Companion</span>{btConnected&&<span style={{marginLeft:"auto",font:"500 10px 'Inter'",color:"#22c55e"}}>&#9679; Connecte</span>}</div>
+                <div style={{flex:1,overflow:"auto"}}>
+                  {!btConnected?(
+                    <div style={{padding:"50px 30px",textAlign:"center"}}>
+                      <div style={{font:"800 24px 'Inter'",color:"#f0f0f5",marginBottom:40}}>Connexion vehicule</div>
+                      <div style={{width:140,height:140,borderRadius:"50%",border:"2px solid #1a1a2e",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px"}}><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.5"><path d="M6.5 6.5l11 11L12 23V1l5.5 5.5-11 11"/></svg></div>
+                      <div style={{font:"500 13px 'Inter'",color:btSearching?"#f59e0b":"#555",minHeight:20,marginBottom:30}}>{btStep||"En attente..."}</div>
+                      <button onClick={startBt} disabled={btSearching} style={{width:"100%",padding:16,border:"none",borderRadius:10,background:btSearching?"#333":"#cc0000",color:btSearching?"#666":"#fff",font:"700 14px 'Inter'",cursor:"pointer"}}>RECHERCHER</button>
+                      <button onClick={()=>setBtConnected(true)} style={{width:"100%",padding:14,border:"1px solid #333",borderRadius:10,background:"transparent",color:"#888",font:"500 13px 'Inter'",cursor:"pointer",marginTop:10}}>Mode demo</button>
+                    </div>
+                  ):(
+                    <div style={{padding:"0 0 20px"}}>
+                      <div style={{background:"#111118",margin:"12px 14px",borderRadius:14,padding:"16px 18px"}}><div style={{font:"700 17px 'Inter'",color:"#f0f0f5"}}>Honda Civic e:HEV</div><div style={{font:"400 11px 'DM Mono'",color:"#555",marginTop:2}}>2024 - 34 521 km</div></div>
+                      <div style={{background:"#111118",margin:"0 14px 8px",borderRadius:14,padding:20,textAlign:"center"}}><div style={{font:"800 52px 'Inter'",color:"#f0f0f5",lineHeight:1}}>{Math.round(speed)}</div><div style={{font:"500 12px 'DM Mono'",color:"#555"}}>km/h</div><div style={{height:8,background:"#1a1a24",borderRadius:4,marginTop:12,overflow:"hidden"}}><div style={{height:"100%",background:"#cc0000",borderRadius:4,transition:"width .5s",width:Math.max(0,speed)/180*100+"%"}}/></div></div>
+                      <div style={{display:"flex",gap:8,margin:"0 14px 8px"}}>{[{l:"CARBURANT",v:"72%"},{l:"MOTEUR",v:"88 C"}].map((x,i)=>(<div key={i} style={{flex:1,background:"#111118",borderRadius:14,padding:"12px 16px"}}><div style={{font:"500 9px 'DM Mono'",color:"#555"}}>{x.l}</div><div style={{font:"700 20px 'Inter'",color:"#f0f0f5",marginTop:4}}>{x.v}</div></div>))}</div>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,margin:"0 14px"}}>{[{l:"AV-G",v:"2.3"},{l:"AV-D",v:"2.3"},{l:"AR-G",v:"2.2"},{l:"AR-D",v:"2.2"}].map((t,i)=>(<div key={i} style={{background:"#111118",borderRadius:10,padding:"8px 12px",textAlign:"center"}}><div style={{font:"500 10px 'DM Mono'",color:"#555"}}>{t.l}</div><div style={{font:"700 16px 'Inter'",color:"#22c55e"}}>{t.v} bar</div></div>))}</div>
+                      <button onClick={()=>{setBtConnected(false);setBtSearching(false);setBtStep("");}} style={{margin:"12px 14px 0",width:"calc(100% - 28px)",padding:12,border:"1px solid #333",borderRadius:10,background:"transparent",color:"#666",font:"500 12px 'Inter'",cursor:"pointer"}}>Deconnecter</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* AI CHAT - COMPANION MODE */}
+          {page==="ai"&&(
+            <div className="fade-in" style={{display:"flex",flexDirection:"column",height:"calc(100vh - 140px)"}}>
+              {showApi&&(<div style={{background:"#fff",border:"1px solid #e8e8e8",borderRadius:10,padding:"12px 16px",marginBottom:12,display:"flex",gap:10,alignItems:"center"}}><span style={{font:"500 12px 'Inter'",color:"#888",whiteSpace:"nowrap"}}>Cle API :</span><input value={apiKey} onChange={e=>setApiKey(e.target.value)} placeholder="sk-ant-..." type="password" style={{flex:1,padding:"8px 12px",border:"1px solid #ddd",borderRadius:6,font:"400 12px 'DM Mono'",outline:"none"}}/><button onClick={()=>setShowApi(false)} style={{background:"none",border:"none",cursor:"pointer",color:"#999"}}>x</button></div>)}
+              <div style={{flex:1,overflow:"auto",marginBottom:16}}>
+                {messages.map((m,i)=>(<div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",marginBottom:12}}><div style={{maxWidth:"75%",padding:"14px 18px",borderRadius:m.role==="user"?"14px 14px 4px 14px":"14px 14px 14px 4px",background:m.role==="user"?"#cc0000":"#fff",color:m.role==="user"?"#fff":"#333",border:m.role==="user"?"none":"1px solid #e8e8e8",font:"400 14px/1.65 'Inter'",whiteSpace:"pre-wrap"}}>{m.role==="assistant"&&<div style={{font:"700 10px 'DM Mono'",color:"#cc0000",marginBottom:6}}>HONDA SMART COMPANION</div>}{m.content}</div></div>))}
+                {loading&&<div style={{display:"flex",marginBottom:12}}><div style={{padding:"14px 18px",borderRadius:"14px 14px 14px 4px",background:"#fff",border:"1px solid #e8e8e8"}}><div style={{font:"700 10px 'DM Mono'",color:"#cc0000",marginBottom:6}}>HONDA SMART COMPANION</div><div style={{display:"flex",gap:6}}>{[0,1,2].map(i=><div key={i} style={{width:8,height:8,borderRadius:"50%",background:"#cc0000",animation:"pulse 1.2s ease-in-out "+i*.2+"s infinite"}}/>)}</div></div></div>}
+                <div ref={chatEnd}/>
+              </div>
+              <div style={{display:"flex",gap:10}}>
+                <button onClick={()=>setShowApi(!showApi)} title="API Claude" style={{width:42,height:42,border:"1px solid #ddd",borderRadius:10,background:apiKey?"#f0fdf4":"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={apiKey?"#16a34a":"#999"} strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 9a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 4.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+                <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendMessage()} placeholder="Ex: Quand est ma prochaine revision ?" style={{flex:1,padding:"14px 18px",background:"#fff",border:"1px solid #ddd",borderRadius:12,font:"500 14px 'Inter'",outline:"none",color:"#1a1a1a"}}/>
+                <button onClick={sendMessage} disabled={loading} style={{padding:"14px 24px",background:"#cc0000",border:"none",borderRadius:12,color:"#fff",font:"700 14px 'Inter'",cursor:"pointer",opacity:loading?.5:1,flexShrink:0}}>Envoyer</button>
+              </div>
+              <div style={{font:"400 11px 'Inter'",color:"#bbb",marginTop:8,textAlign:"center"}}>{apiKey?"Mode API Claude active":"Mode intelligent hors-ligne | Cliquez sur la roue pour connecter l'API Claude"}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
